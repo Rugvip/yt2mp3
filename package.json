@@ -1,0 +1,15 @@
+{
+    "name" : "yt2mp3",
+    "version" : "0.0.1",
+    "description" : "Downloads YT videos as MP3 files",
+    "dependencies" : {
+        "colors": "0.6.x",
+        "request": "2.30.x",
+        "prompt": "0.2.x",
+        "lodash": "2.4.x",
+        "async": "0.2.x",
+        "youtube-mp3": "0.0.5",
+        "youtube-api": "0.2.0",
+        "mkdirp": "0.3.x"
+    }
+}
