@@ -11,7 +11,12 @@ var API_KEY = "AIzaSyCu0eybzj30lAzAV08xpF0bZQSZEFohJvo";
 var BASE_URL = "http://www.youtube.com/watch?v=";
 var EXTENSION = ".mp3";
 
+var queue = _a.queue(function (id, callback) {
+    _a.compose(downloadVideo, fetchVideoInfo)(id, callback);
+}, 1);
+
 function fetchVideoInfo(id, cb) {
+    console.log("Fetching video with id: " + id);
     request.get({
             url: API_URL + "/videos",
             qs: {
@@ -22,6 +27,7 @@ function fetchVideoInfo(id, cb) {
             json: true
         }, function (err, res, body) {
         if (err) {
+            console.err("Could not get video info: " + err);
             cb(err);
         } else {
             if (body && body.items && body.items[0]) {
@@ -32,49 +38,16 @@ function fetchVideoInfo(id, cb) {
                     id: id
                 });
             } else {
-                cb({error: "Empty response"});
+                cb({error: "Video info got empty response"});
             }
         }
     });
 }
 
-function matchTitle(info) {
-    var match = info.title.match(/(?:(.+?)\s*-\s*(.+?)\s*(?:\(\s*(.+?)\s*\)\s*)?$)|(.*)/);
-
-    if (match[4]) {
-        info.song = match[4];
-        info.simple = true;
-    } else {
-        info.artist = match[1];
-        info.song = match[2];
-        info.extra = match[3];
-    }
-}
-
 function downloadVideo(info, cb) {
-    matchTitle(info);
-
-    if (info.simple) {
-        mp3.download(BASE_URL + info.id, info.song + EXTENSION, function (err) {
-            cb(err, info);
-        });
-    } else {
-        mkdirp(info.artist, function (err, made) {
-            if (err) {
-                cb(err);
-            } else {
-                var file = info.artist + "/" + info.song;
-
-                if (info.extra) {
-                    file += "(" + info.extra + ")";
-                }
-
-                mp3.download(BASE_URL + info.id, file + EXTENSION, function (err) {
-                    cb(err, info);
-                });
-            }
-        });
-    }
+    mp3.download(BASE_URL + info.id, info.title.replace(/\?|\!|\.|%|#|\$|\@/, "") + EXTENSION, function (err) {
+        cb(err, info);
+    });
 }
 
 process.stdin.on('data', function (data) {
@@ -85,7 +58,10 @@ process.stdin.on('data', function (data) {
             return m ? m[1] : null;
         }).value();
 
-    _a.map(ids, _a.compose(downloadVideo, fetchVideoInfo), function (err, results) {
-        console.dir(results);
+    queue.push(ids, function (err, wat) {
+        console.dir(wat);
+        if (err) {
+            console.log("Video download failed: " + err);
+        }
     });
 });
