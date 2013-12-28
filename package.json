@@ -1,6 +1,6 @@
 {
   "name": "yt2mp3",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A terminal program that downloads YouTube videos as MP3 files using www.youtube-mp3.org",
   "author": {
     "name": "Rugvip",
@@ -28,7 +28,6 @@
     "request": "2.30.x",
     "lodash": "2.4.x",
     "async": "0.2.x",
-    "progress": "1.1.x",
     "charm": "0.2.x",
     "string": "1.7.x",
     "sprintf": "~0.1.3"

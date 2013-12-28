@@ -2,8 +2,7 @@ require('colors');
 var fs = require('fs'),
     request = require('request'),
     _a = require('async'),
-    EventEmitter = require('events').EventEmitter,
-    ProgressBar = require('progress');
+    EventEmitter = require('events').EventEmitter;
 
 var BASE_SERVICE_URL = 'http://www.youtube-mp3.org';
 var BASE_YT_URL = "http://www.youtube.com/watch?v=";
