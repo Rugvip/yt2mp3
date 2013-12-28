@@ -25,9 +25,7 @@ function pushItem(downloader, cb) {
         if (err) {
             cb(err);
         } else if (!body) {
-            cb({error: "Empty push response"});
-        } else if (body !== downloader.videoId) {
-            cb({error: "Push response id doesn't match: '" + body + "' != '" + downloader.videoId + "'"});
+            cb({error: "[" + downloader.videoId + "] Empty push response"});
         } else {
             cb(null, downloader);
         }
@@ -49,14 +47,14 @@ function itemInfo(downloader, cb) {
             var match = body.match(/^info = (.*);$/);
             if (!match) {
                 if (body === 'pushItemYTError();') {
-                    cb({error: "Could not push video, video size limit is 20 min"});
+                    cb({error: "[" + downloader.videoId + "] Could not push video, video size limit is 20 min"});
                 } else {
-                    cb({error: "Invalid response: " + body});
+                    cb({error: "[" + downloader.videoId + "] Invalid response: " + body});
                 }
             } else {
                 var info = JSON.parse(match[1]);
 
-                downloader.title = info.title;
+                downloader.title = info.title.replace(/[^A-Za-z0-9\s-_\[\]\(\)\{\}\+\.\*]/g, "");
                 downloader.h = info.h;
 
                 cb(null, downloader);
@@ -100,10 +98,10 @@ function download(downloader, cb) {
             });
 
             output.on('error', function (err) {
-                cb({error: "Download failed", cause: err});
+                cb({error: "[" + downloader.videoId + "] Download failed: " + err});
             });
         } else {
-            cb({error: "Failed to start download"});
+            cb({error: "[" + downloader.videoId + "] Failed to start download"});
         }
     });
 }
