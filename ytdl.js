@@ -17,7 +17,8 @@ function pushItem(videoId, cb) {
         },
         headers: {
             Host: "www.youtube-mp3.org",
-            Referer: "http://www.youtube-mp3.org/"
+            Referer: "http://www.youtube-mp3.org/",
+            'Accept-Location': '*'
         }
     }, function (err, res, body) {
         if (err) {
