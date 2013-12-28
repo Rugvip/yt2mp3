@@ -106,12 +106,12 @@ function download(info, cb) {
             });
 
             output.on('error', function (err) {
-                console.error("Failed to download '" + info.title + "' (" + err + ")");
+                console.error("Failed to download '" + info.title + "'");
 
                 cb(err);
             });
         } else {
-            console.error("Failed to start downloading '" + info.title + "' (" + err + ")");
+            console.error("Failed to start downloading '" + info.title + "'");
 
             cb({error: "Failed to start download"});
         }
