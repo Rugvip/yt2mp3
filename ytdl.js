@@ -1,7 +1,7 @@
 var fs = require('fs');
 var request = require('request');
 var _a = require('async');
-var progress = require('progress');
+var ProgressBar = require('progress');
 require('colors');
 
 var BASE_SERVICE_URL = 'http://www.youtube-mp3.org';
@@ -88,7 +88,7 @@ function download(info, cb) {
 
             var length = parseInt(res.headers['content-length'], 10);
 
-            var bar = new progress('[:bar] :percent :etas', {
+            var bar = new ProgressBar('[:bar] :percent :etas', {
                 complete: '=',
                 incomplete: ' ',
                 width: 40,
