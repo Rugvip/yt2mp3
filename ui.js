@@ -17,7 +17,7 @@ function ProgressBar(opt) {
 
     charm.push();
     charm.down(this.y);
-    charm.write(sprintf('%s'.red.bold, opt.title));
+    charm.write(opt.title);
     charm.pop();
 }
 
@@ -34,9 +34,9 @@ ProgressBar.prototype.tick = function (inc) {
     charm.push();
     charm.down(this.y + 1);
     charm.write('['.blue.bold);
-    charm.write(S('='.green.bold).times(steps).s);
+    charm.write(S('=').times(steps).s.blue.bold);
     charm.right(this.width - steps);
-    charm.write(']'.blue.bold);
+    charm.write(']'.cyan.bold);
     charm.write(sprintf(" %6.2f%%".yellow.bold, progress * 100));
     charm.pop();
 

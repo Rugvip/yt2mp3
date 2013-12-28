@@ -32,16 +32,19 @@ if (process.argv.length < 3) {
         download.on('start', function (length) {
             var bar = new ui.ProgressBar({
                 max: length,
-                title: download.title
+                title: download.title.green.bold
             });
             download.on('tick', function (tick) {
                 bar.tick(tick);
+            });
+            download.on('done', function () {
+                callback();
             });
         });
         download.on('error', function (err) {
             var bar = new ui.ProgressBar({
                 max: 0,
-                title: err.error
+                title: err.error.red.bold
             });
             callback();
         });

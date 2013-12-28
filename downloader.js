@@ -48,7 +48,11 @@ function itemInfo(downloader, cb) {
         } else {
             var match = body.match(/^info = (.*);$/);
             if (!match) {
-                cb({error: "Invalid response: " + body});
+                if (body === 'pushItemYTError();') {
+                    cb({error: "Could not push video, video size limit is 20 min"});
+                } else {
+                    cb({error: "Invalid response: " + body});
+                }
             } else {
                 var info = JSON.parse(match[1]);
 
