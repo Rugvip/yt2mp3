@@ -1,9 +1,6 @@
-var request = require('request');
-var prompt = require('prompt');
 var _ = require('lodash');
 var _a = require('async');
-var mp3 = require('youtube-mp3');
-var mkdirp = require('mkdirp')
+var ytdl = require('./ytdl');
 require('colors');
 
 var API_URL = "https://www.googleapis.com/youtube/v3";
@@ -11,9 +8,7 @@ var API_KEY = "AIzaSyCu0eybzj30lAzAV08xpF0bZQSZEFohJvo";
 var BASE_URL = "http://www.youtube.com/watch?v=";
 var EXTENSION = ".mp3";
 
-var queue = _a.queue(function (id, callback) {
-    _a.compose(downloadVideo, fetchVideoInfo)(id, callback);
-}, 1);
+var queue = _a.queue(ytdl, 1);
 
 function fetchVideoInfo(id, cb) {
     console.log("Fetching video with id: " + id);
@@ -44,12 +39,6 @@ function fetchVideoInfo(id, cb) {
     });
 }
 
-function downloadVideo(info, cb) {
-    mp3.download(BASE_URL + info.id, info.title.replace(/\?|\!|\.|%|#|\$|\@/, "") + EXTENSION, function (err) {
-        cb(err, info);
-    });
-}
-
 process.stdin.on('data', function (data) {
     var ids = _(data.toString().split(/\n|\r| /))
         .filter(function (e) { return !!e })
@@ -59,7 +48,6 @@ process.stdin.on('data', function (data) {
         }).value();
 
     queue.push(ids, function (err, wat) {
-        console.dir(wat);
         if (err) {
             console.log("Video download failed: " + err);
         }

@@ -10,6 +10,7 @@
         "async": "0.2.x",
         "youtube-mp3": "0.0.5",
         "youtube-api": "0.2.0",
-        "mkdirp": "0.3.x"
+        "mkdirp": "0.3.x",
+        "string": "1.7.x"
     }
 }
