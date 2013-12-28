@@ -1,7 +1,7 @@
 {
   "name": "yt2mp3",
   "version": "0.0.3",
-  "description": "Downloads YT videos as MP3 files using www.youtube-mp3.org",
+  "description": "A terminal program that downloads YouTube videos as MP3 files using www.youtube-mp3.org",
   "author": {
     "name": "Rugvip",
     "url": "http://github.com/rugvip"
@@ -9,7 +9,20 @@
   "bin": {
     "yt2mp3": "./yt2mp3.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rugvip/yt2mp3.git"
+  },
+  "keywords": [
+    "youtube",
+    "mp3",
+    "download",
+    "binary",
+    "terminal"
+  ],
+  "preferGlobal": "true",
   "main": "./yt2mp3.js",
+  "licenses": "MIT",
   "dependencies": {
     "colors": "0.6.x",
     "request": "2.30.x",
@@ -19,5 +32,8 @@
     "charm": "0.2.x",
     "string": "1.7.x",
     "sprintf": "~0.1.3"
+  },
+  "engines": {
+    "node": ">=0.10.0"
   }
 }
