@@ -1,9 +1,11 @@
-var _ = require('lodash');
-var _a = require('async');
-var ytdl = require('./ytdl');
-require('colors');
+#!/usr/bin/env node
 
-var queue = _a.queue(ytdl, 1);
+require('colors');
+var _ = require('lodash'),
+    _a = require('async'),
+    downloader = require('./downloader');
+
+var queue = _a.queue(downloader, 1);
 
 process.stdin.on('data', function (data) {
     var ids = _(data.toString().split(/\n|\r| /))

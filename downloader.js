@@ -1,8 +1,8 @@
-var fs = require('fs');
-var request = require('request');
-var _a = require('async');
-var ProgressBar = require('progress');
 require('colors');
+var fs = require('fs'),
+    request = require('request'),
+    _a = require('async'),
+    ProgressBar = require('progress');
 
 var BASE_SERVICE_URL = 'http://www.youtube-mp3.org';
 var BASE_YT_URL = "http://www.youtube.com/watch?v=";
