@@ -80,7 +80,7 @@ function download(info, cb) {
     delete info.h;
 
     req.on('response', function (res) {
-        console.log("Downloading '" + info.title + "'");
+        console.log("%s".yellow.bold, info.title);
 
         if (res.headers['content-type'] === 'application/octet-stream') {
             var output = fs.createWriteStream(info.title + ".mp3");
@@ -89,7 +89,7 @@ function download(info, cb) {
 
             var length = parseInt(res.headers['content-length'], 10);
 
-            var bar = new ProgressBar('[:bar] :percent :etas', {
+            var bar = new ProgressBar('['.red.bold + ':bar' + ']'.red.bold + ' :percent :etas', {
                 complete: '=',
                 incomplete: ' ',
                 width: 40,
@@ -101,8 +101,6 @@ function download(info, cb) {
             });
 
             output.on('finish', function () {
-                console.log("Successfully downloaded '" + info.title + "'");
-
                 cb(null, info);
             });
 
