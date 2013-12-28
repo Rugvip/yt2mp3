@@ -1,11 +1,6 @@
 var fs = require('fs');
 var request = require('request');
-var prompt = require('prompt');
-var _ = require('lodash');
 var _a = require('async');
-var mp3 = require('youtube-mp3');
-var mkdirp = require('mkdirp');
-var S = require('string');
 var progress = require('progress');
 require('colors');
 
