@@ -1,6 +1,6 @@
 {
   "name": "yt2mp3",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Downloads YT videos as MP3 files using www.youtube-mp3.org",
   "author": {
     "name": "Rugvip",
