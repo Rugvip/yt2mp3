@@ -7,6 +7,7 @@ lib-cov
 *.pid
 *.gz
 *.sublime*
+*.mp3
 
 pids
 logs
