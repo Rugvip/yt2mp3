@@ -1,11 +1,16 @@
 {
-    "name" : "yt2mp3",
-    "version" : "0.0.1",
-    "description" : "Downloads YT videos as MP3 files",
-    "bin": {
-        "ytdl": "ytdl.js"
+    "name": "yt2mp3",
+    "version": "0.0.1",
+    "description": "Downloads YT videos as MP3 files using www.youtube-mp3.org",
+    "author": {
+        "name": "Rugvip",
+        "url": "http://github.com/rugvip"
     },
-    "dependencies" : {
+    "bin": {
+        "ytdl": "./ytdl.js"
+    },
+    "main": "./ytdl.js",
+    "dependencies": {
         "colors": "0.6.x",
         "request": "2.30.x",
         "lodash": "2.4.x",
