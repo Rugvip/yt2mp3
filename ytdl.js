@@ -3,6 +3,7 @@
 require('colors');
 var _ = require('lodash'),
     _a = require('async'),
+    ui = require('./ui.js'),
     downloader = require('./downloader');
 
 var queue = _a.queue(downloader, 1);
@@ -23,7 +24,30 @@ if (process.argv.length < 3) {
         .filter(function (e) { return !!e })
         .value();
 
-    queue.push(ids, handleResult);
+    _a.map(ids, function (id, callback) {
+        callback = _.once(callback);
+
+        var download = downloader.startDownload(id);
+
+        download.on('start', function (length) {
+            var bar = new ui.ProgressBar({
+                max: length,
+                title: download.title
+            });
+            download.on('tick', function (tick) {
+                bar.tick(tick);
+            });
+        });
+        download.on('error', function (err) {
+            var bar = new ui.ProgressBar({
+                max: 0,
+                title: err.error
+            });
+            callback();
+        });
+    }, function (err, result) {
+        ui.stop();
+    });
 }
 
 function stripVideoId(str) {

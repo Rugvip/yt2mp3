@@ -2,16 +2,17 @@ require('colors');
 var fs = require('fs'),
     request = require('request'),
     _a = require('async'),
+    EventEmitter = require('events').EventEmitter,
     ProgressBar = require('progress');
 
 var BASE_SERVICE_URL = 'http://www.youtube-mp3.org';
 var BASE_YT_URL = "http://www.youtube.com/watch?v=";
 
-function pushItem(videoId, cb) {
+function pushItem(downloader, cb) {
     request.get({
         url: BASE_SERVICE_URL + '/a/pushItem/',
         qs: {
-            item: BASE_YT_URL + videoId,
+            item: BASE_YT_URL + downloader.videoId,
             el: 'na',
             bf: 'false'
         },
@@ -25,17 +26,19 @@ function pushItem(videoId, cb) {
             cb(err);
         } else if (!body) {
             cb({error: "Empty push response"});
+        } else if (body !== downloader.videoId) {
+            cb({error: "Push response id doesn't match: '" + body + "' != '" + downloader.videoId + "'"});
         } else {
-            cb(null, body);
+            cb(null, downloader);
         }
     });
 }
 
-function itemInfo(videoId, cb) {
+function itemInfo(downloader, cb) {
     request.get({
         url: BASE_SERVICE_URL + '/a/itemInfo/',
         qs: {
-            video_id: videoId,
+            video_id: downloader.videoId,
             ac: 'www',
             t: 'grp'
         }
@@ -49,69 +52,53 @@ function itemInfo(videoId, cb) {
             } else {
                 var info = JSON.parse(match[1]);
 
-                info.videoId = videoId;
+                downloader.title = info.title;
+                downloader.h = info.h;
 
-                delete info.progress_speed;
-                delete info.progress;
-                delete info.status;
-                delete info.pf;
-                delete info.ads;
-                delete info.length;
-
-                cb(null, info);
+                cb(null, downloader);
             }
         }
     });
 }
 
-function download(info, cb) {
+function download(downloader, cb) {
     var now = (new Date).getTime();
 
     var req = request({
         url: BASE_SERVICE_URL + '/get',
         qs: {
             ab: 256,
-            video_id: info.videoId,
-            h: info.h,
-            r: now + "." + adler32(info.videoId + now)
+            video_id: downloader.videoId,
+            h: downloader.h,
+            r: now + "." + adler32(downloader.videoId + now)
         }
     });
 
-    delete info.h;
+    delete downloader.h;
 
     req.on('response', function (res) {
-        console.log("%s".yellow.bold, info.title);
-
         if (res.headers['content-type'] === 'application/octet-stream') {
-            var output = fs.createWriteStream(info.title + ".mp3");
+            var output = fs.createWriteStream(downloader.title + ".mp3");
 
             res.pipe(output);
 
             var length = parseInt(res.headers['content-length'], 10);
 
-            var bar = new ProgressBar('['.red.bold + ':bar' + ']'.red.bold + ' :percent :etas', {
-                complete: '=',
-                incomplete: ' ',
-                width: 40,
-                total: length
-            });
+            downloader.emit('start', length);
 
             res.on('data', function (chunk) {
-                bar.tick(chunk.length);
+                downloader.emit('tick', chunk.length);
             });
 
             output.on('finish', function () {
-                cb(null, info);
+                downloader.emit('done');
+                cb(null, downloader);
             });
 
             output.on('error', function (err) {
-                console.error("Failed to download '" + info.title + "'");
-
-                cb(err);
+                cb({error: "Download failed", cause: err});
             });
         } else {
-            console.error("Failed to start downloading '" + info.title + "'");
-
             cb({error: "Failed to start download"});
         }
     });
@@ -128,4 +115,24 @@ function adler32(str) {
     return b << 16 | a;
 }
 
-module.exports = _a.compose(download, itemInfo, pushItem);
+exports.startDownload = function (videoId, cb) {
+    var downloader = new EventEmitter;
+    downloader.videoId = videoId;
+
+    _a.waterfall([
+        function (callback) {
+            callback(null, downloader);
+        },
+        pushItem,
+        itemInfo,
+        download], function (err, result) {
+            if (err) {
+                downloader.emit('error', err);
+            }
+            if (cb) {
+                cb(err, result);
+            }
+        });
+
+    return downloader;
+};

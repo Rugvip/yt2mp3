@@ -6,33 +6,6 @@ var S = require('string'),
 
 var instances = 0;
 
-setTimeout(function () {
-    var bar = new ProgressBar({
-        title: "This is a test bar",
-        max: 21
-    });
-
-    var interval = setInterval(function () {
-        if (bar.tick(1)) {
-            clearInterval(interval);
-        }
-    }, 100);
-}, 0000);
-
-setTimeout(function () {
-    var bar = new ProgressBar({
-        title: "Another bar",
-        max: 41
-    });
-
-    var interval = setInterval(function () {
-        if (bar.tick(1)) {
-            clearInterval(interval);
-            stop();
-        }
-    }, 50);
-}, 1000);
-
 process.on('exit', stop);
 
 function ProgressBar(opt) {
@@ -44,7 +17,7 @@ function ProgressBar(opt) {
 
     charm.push();
     charm.down(this.y);
-    charm.write(sprintf('derp ' + '%s'.red.bold, opt.title));
+    charm.write(sprintf('%s'.red.bold, opt.title));
     charm.pop();
 }
 
