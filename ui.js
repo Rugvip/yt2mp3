@@ -1,12 +1,11 @@
 
 require('colors');
 var S = require('string'),
+    _ = require('lodash'),
     sprintf = require('sprintf').sprintf,
     charm = require('charm')(process);
 
 var instances = 0;
-
-process.on('exit', stop);
 
 function ProgressBar(opt) {
     this.y = instances * 2;
@@ -14,6 +13,11 @@ function ProgressBar(opt) {
     this.width = 50;
     this.max = opt.max;
     this.value = 0;
+
+    for (var i = 0; i < this.y + 2; i++) {
+        console.log();
+    }
+    charm.up(this.y + 2);
 
     charm.push();
     charm.down(this.y);
@@ -33,20 +37,24 @@ ProgressBar.prototype.tick = function (inc) {
 
     charm.push();
     charm.down(this.y + 1);
-    charm.write('['.blue.bold);
-    charm.write(S('=').times(steps).s.blue.bold);
+    charm.write('['.bold);
+    charm.write(S('=').times(steps).s.bold);
     charm.right(this.width - steps);
-    charm.write(']'.cyan.bold);
+    charm.write(']'.bold);
     charm.write(sprintf(" %6.2f%%".yellow.bold, progress * 100));
     charm.pop();
 
     return this.value === this.max;
 };
 
-function stop() {
-    charm.position(0, instances * 2);
+var stop = _.once(function () {
+    for (var i = 0; i < instances * 2 - 1; i++) {
+        console.log();
+    }
     charm.end();
-}
+});
+
+process.on('exit', stop);
 
 exports.ProgressBar = ProgressBar;
 exports.stop = stop;
