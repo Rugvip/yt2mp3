@@ -7,9 +7,9 @@
     "url": "http://github.com/rugvip"
   },
   "bin": {
-    "ytdl": "./ytdl.js"
+    "yt2mp3": "./yt2mp3.js"
   },
-  "main": "./ytdl.js",
+  "main": "./yt2mp3.js",
   "dependencies": {
     "colors": "0.6.x",
     "request": "2.30.x",
