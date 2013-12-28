@@ -7,7 +7,8 @@ var _ = require('lodash'),
     downloader = require('./downloader');
 
 if (process.argv.length < 3) {
-    console.log("Add url/id of videos to download as argument(s).");
+    console.log("Pass video url/id as arguments".red.bold);
+    ui.stop();
 } else {
     var ids = _(process.argv)
         .drop(2)
